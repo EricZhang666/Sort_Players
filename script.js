@@ -59,17 +59,30 @@ function generatePositionFilter() {
     document.getElementById("positionFilter").innerHTML = options;
 }
 
+//update table after applying filter and sort
 function updateTable() {
     let currentList = allPlayers.slice();
     let country = document.getElementById("countryFilter").value;
     let position = document.getElementById("positionFilter").value;
-    console.log(country);
-    console.log(position);
-    if(country !== "all"){
-        currentList = allPlayers.filter(player => player.Country === country);
-    }
-    if(position !== "all"){
-        currentList = currentList.filter(player => player.Position === position);
-    }
+    currentList = filterByCountry(currentList, country);
+    currentList = filterByPosition(currentList, position);
     generateTable(currentList);
+}
+
+//apply country filter
+function filterByCountry(arr, country) {
+    let currentList = arr.slice();
+    if(country !== "all"){
+        currentList = arr.filter(player => player.Country === country);
+    }
+    return currentList;
+}
+
+//apply position filter
+function filterByPosition(arr, position) {
+    let currentList = arr.slice();
+    if(position !== "all"){
+        currentList = arr.filter(player => player.Position === position);
+    }
+    return currentList;
 }
