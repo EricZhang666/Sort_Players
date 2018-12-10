@@ -1,12 +1,14 @@
 const allPlayers = [...data];
 const positionList = listPosition(allPlayers);
 const countryList = listCountry(allPlayers);
+const sortOptions = ["number", "first name", "last name", "date of birth", "years in league"];
 
 //load initial table with all players 
 function loadTable() {
     generateTable(allPlayers);
     generateCountryFilter();
     generatePositionFilter();
+    generateSorter();
 }
 
 //generate table for a particular array of players
@@ -57,6 +59,14 @@ function generatePositionFilter() {
         options += `<option value=${positionList[i]}>${positionList[i]}</option>`;
     }
     document.getElementById("positionFilter").innerHTML = options;
+}
+
+function generateSorter() {
+    let options = "";
+    for(var i = 0; i < sortOptions.length; i++){
+        options += `<option value=${sortOptions[i]}>${sortOptions[i]}</option>`;
+    }
+    document.getElementById("sort").innerHTML = options;
 }
 
 //update table after applying filter and sort
