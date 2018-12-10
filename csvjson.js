@@ -1,4 +1,4 @@
-[
+data = [
   {
     "Number": 22,
     "First_Name": "Wilson",
