@@ -13,9 +13,9 @@
 <body onload="loadTable()">
     <div class="container">
         <h1>Players table</h1>
-        <select class="custom-select" id="countryFilter">
+        <select class="custom-select" id="countryFilter" onchange="updateTable()">
         </select>
-        <select class="custom-select" id="positionFilter">
+        <select class="custom-select" id="positionFilter" onchange="updateTable()">
         </select>
         <h4></h4>
         <table class="table-bordered table">

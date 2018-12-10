@@ -1,9 +1,10 @@
-const positionList = listPosition(data);
-const countryList = listCountry(data);
+const allPlayers = [...data];
+const positionList = listPosition(allPlayers);
+const countryList = listCountry(allPlayers);
 
 //load initial table with all players 
 function loadTable() {
-    generateTable(data);
+    generateTable(allPlayers);
     generateCountryFilter();
     generatePositionFilter();
 }
@@ -13,7 +14,7 @@ function generateTable(arr) {
     document.getElementsByTagName("h4")[0].innerHTML = "Results Found: " + arr.length;
     let tableBody = "";
     for(var i = 0; i < arr.length; i ++){
-        tableBody += generateRow(data[i]);
+        tableBody += generateRow(arr[i]);
     }
     document.getElementById("tbody").innerHTML = tableBody;
 }
@@ -40,18 +41,35 @@ function listCountry(data) {
     return countryList;
 }
 
+//generate country filter for country list in dom 
 function generateCountryFilter() {
-    let options = "<option selected>All Countries</option>";
+    let options = "<option selected value='all'>All Countries</option>";
     for(var i = 0; i < countryList.length; i++){
         options += `<option value=${countryList[i]}>${countryList[i]}</option>`;
     }
     document.getElementById("countryFilter").innerHTML = options;
 }
 
+//generate position filter for position list in dom 
 function generatePositionFilter() {
-    let options = "<option selected>All Positions</option>";
+    let options = "<option selected value='all'>All Positions</option>";
     for(var i = 0; i < positionList.length; i++){
         options += `<option value=${positionList[i]}>${positionList[i]}</option>`;
     }
     document.getElementById("positionFilter").innerHTML = options;
+}
+
+function updateTable() {
+    let currentList = allPlayers.slice();
+    let country = document.getElementById("countryFilter").value;
+    let position = document.getElementById("positionFilter").value;
+    console.log(country);
+    console.log(position);
+    if(country !== "all"){
+        currentList = allPlayers.filter(player => player.Country === country);
+    }
+    if(position !== "all"){
+        currentList = currentList.filter(player => player.Position === position);
+    }
+    generateTable(currentList);
 }
