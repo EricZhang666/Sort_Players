@@ -33,7 +33,8 @@ function generateTable(arr) {
 
 //generate one row for one single player data
 function generateRow(player) {
-    let row = `<tr><td>${player.Number}</td><td>${player.First_Name}</td><td>${player.Last_Name}</td><td>${player.Position}</td><td>${player.DOB}</td><td>${player.Country}</td><td>${player.Years_in_league}</td><td>${player.College}</td></tr>`;
+    let age = new Date().getUTCFullYear() - new Date(player.DOB).getUTCFullYear();
+    let row = `<tr><td>${player.Number}</td><td>${player.First_Name}</td><td>${player.Last_Name}</td><td>${player.Position}</td><td>${player.DOB} (<b>${age}</b>)</td><td>${player.Country}</td><td>${player.Years_in_league}</td><td>${player.College}</td></tr>`;
     return row;
 }
 
