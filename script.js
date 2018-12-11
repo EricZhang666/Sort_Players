@@ -1,7 +1,17 @@
 const allPlayers = [...data];
 const positionList = listPosition(allPlayers);
 const countryList = listCountry(allPlayers);
-const sortOptions = ["number", "first name", "last name", "date of birth", "years in league"];
+
+const months = ['January', 'February', 'March', 'April', 'May', 'June', 
+'July', 'August', 'September', 'October', 'November', 'December'];
+
+const sortOptions = [
+    {name:"First Name", value:"firstName"},
+    {name:"Last Name", value:"lastName"},
+    {name:"Number", value:"number"},
+    {name:"Date of Birth", value:"dateOfBirth"},
+    {name:"Years in League", value:"yearsInLeague"}
+];
 
 //load initial table with all players 
 function loadTable() {
@@ -64,7 +74,7 @@ function generatePositionFilter() {
 function generateSorter() {
     let options = "";
     for(var i = 0; i < sortOptions.length; i++){
-        options += `<option value=${sortOptions[i]}>${sortOptions[i]}</option>`;
+        options += `<option value=${sortOptions[i].value}>${sortOptions[i].name}</option>`;
     }
     document.getElementById("sort").innerHTML = options;
 }
@@ -74,8 +84,11 @@ function updateTable() {
     let currentList = allPlayers.slice();
     let country = document.getElementById("countryFilter").value;
     let position = document.getElementById("positionFilter").value;
+    let sort = document.getElementById("sort").value;
     currentList = filterByCountry(currentList, country);
     currentList = filterByPosition(currentList, position);
+    console.log(sort);
+    currentList = sortPlayers(currentList, sort);
     generateTable(currentList);
 }
 
@@ -96,3 +109,83 @@ function filterByPosition(arr, position) {
     }
     return currentList;
 }
+
+//sort array of players (by first name by default)
+function sortPlayers(arr, sort) {
+    let num = [];
+    let str = [];
+    let currentList = arr.slice();
+    switch (sort) {
+        case "lastName":
+            currentList.sort((a, b) => {
+                if(a.Last_Name < b.Last_Name){
+                    return -1;
+                }else if(a.Last_Name > b.Last_Name){
+                    return 1;
+                }
+                return 0;
+            });
+            break;
+
+        case "number":
+            num = [];
+            str = [];
+            currentList.map(player => isNaN(player.Number) ? str.push(player) : num.push(player));
+            num.sort((a, b) => {
+                return a.Number - b.Number;
+            });
+            str.sort((a, b) => {
+                if(a.First_Name < b.First_Name){
+                    return -1;
+                }else if(a.First_Name > b.First_Name){
+                    return 1;
+                }
+                return 0;
+            });
+            currentList = num.concat(str);
+            break;
+        
+        case "yearsInLeague":
+            num = [];
+            str = [];
+            currentList.map(player => isNaN(player.Years_in_league) ? str.push(player) : num.push(player));
+            num.sort((a, b) => {
+                return b.Years_in_league - a.Years_in_league;
+            });
+            str.sort((a, b) => {
+                if(a.First_Name < b.First_Name){
+                    return -1;
+                }else if(a.First_Name > b.First_Name){
+                    return 1;
+                }
+                return 0;
+            });
+            currentList = num.concat(str);
+            break;
+        
+        case "dateOfBirth":
+            currentList.sort((a, b) => {
+                if(new Date(a.DOB) > new Date(b.DOB)){
+                    return 1;
+                }else if(new Date(a.DOB) < new Date(b.DOB)){
+                    return -1
+                }
+                return 0;
+            });
+            break;
+        
+        default:
+            currentList.sort((a, b) => {
+                if(a.First_Name < b.First_Name){
+                    return -1;
+                }else if(a.First_Name > b.First_Name){
+                    return 1;
+                }
+                return 0;
+            });
+            break;
+    }
+
+    return currentList;
+}
+
