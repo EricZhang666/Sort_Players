@@ -1,7 +1,7 @@
 const allPlayers = [...data];
 const positionList = listPosition(allPlayers);
 const countryList = listCountry(allPlayers);
-
+let reversed = false;
 const months = ['January', 'February', 'March', 'April', 'May', 'June', 
 'July', 'August', 'September', 'October', 'November', 'December'];
 
@@ -15,7 +15,7 @@ const sortOptions = [
 
 //load initial table with all players 
 function loadTable() {
-    generateTable(allPlayers);
+    generateTable(sortPlayers(allPlayers));
     generateCountryFilter();
     generatePositionFilter();
     generateSorter();
@@ -28,7 +28,7 @@ function generateTable(arr) {
     for(var i = 0; i < arr.length; i ++){
         tableBody += generateRow(arr[i]);
     }
-    document.getElementById("tbody").innerHTML = tableBody;
+    $("#tbody").html(tableBody);
 }
 
 //generate one row for one single player data
@@ -60,7 +60,7 @@ function generateCountryFilter() {
     for(var i = 0; i < countryList.length; i++){
         options += `<option value=${countryList[i]}>${countryList[i]}</option>`;
     }
-    document.getElementById("countryFilter").innerHTML = options;
+    $("#countryFilter").html(options);
 }
 
 //generate position filter for position list in dom 
@@ -69,7 +69,7 @@ function generatePositionFilter() {
     for(var i = 0; i < positionList.length; i++){
         options += `<option value=${positionList[i]}>${positionList[i]}</option>`;
     }
-    document.getElementById("positionFilter").innerHTML = options;
+    $("#positionFilter").html(options);
 }
 
 function generateSorter() {
@@ -77,19 +77,24 @@ function generateSorter() {
     for(var i = 0; i < sortOptions.length; i++){
         options += `<option value=${sortOptions[i].value}>${sortOptions[i].name}</option>`;
     }
-    document.getElementById("sort").innerHTML = options;
+    $("#sort").html(options);
 }
 
 //update table after applying filter and sort
 function updateTable() {
     let currentList = allPlayers.slice();
-    let country = document.getElementById("countryFilter").value;
-    let position = document.getElementById("positionFilter").value;
-    let sort = document.getElementById("sort").value;
+    let country = $("#countryFilter").val();
+    let position = $("#positionFilter").val();
+    let sort = $("#sort").val();
+    
     currentList = filterByCountry(currentList, country);
     currentList = filterByPosition(currentList, position);
     console.log(sort);
-    currentList = sortPlayers(currentList, sort);
+    if(reversed){
+        currentList = sortPlayersReversed(currentList, sort);
+    }else{
+        currentList = sortPlayers(currentList, sort);
+    }
     generateTable(currentList);
 }
 
@@ -109,6 +114,11 @@ function filterByPosition(arr, position) {
         currentList = arr.filter(player => player.Position === position);
     }
     return currentList;
+}
+
+//change order of sorting
+function reverse() {
+    reversed = !reversed;
 }
 
 //sort array of players (by first name by default)
@@ -151,12 +161,91 @@ function sortPlayers(arr, sort) {
             str = [];
             currentList.map(player => isNaN(player.Years_in_league) ? str.push(player) : num.push(player));
             num.sort((a, b) => {
-                return b.Years_in_league - a.Years_in_league;
+                return a.Years_in_league - b.Years_in_league;
             });
             str.sort((a, b) => {
                 if(a.First_Name < b.First_Name){
                     return -1;
                 }else if(a.First_Name > b.First_Name){
+                    return 1;
+                }
+                return 0;
+            });
+            currentList = num.concat(str);
+            break;
+        
+        case "dateOfBirth":
+            currentList.sort((a, b) => {
+                if(new Date(a.DOB) < new Date(b.DOB)){
+                    return 1;
+                }else if(new Date(a.DOB) > new Date(b.DOB)){
+                    return -1
+                }
+                return 0;
+            });
+            break;
+        
+        default:
+            currentList.sort((a, b) => {
+                if(a.First_Name < b.First_Name){
+                    return -1;
+                }else if(a.First_Name > b.First_Name){
+                    return 1;
+                }
+                return 0;
+            });
+            break;
+    }
+
+    return currentList;
+}
+
+//sort array of players (by first name by default)
+function sortPlayersReversed(arr, sort) {
+    let num = [];
+    let str = [];
+    let currentList = arr.slice();
+    switch (sort) {
+        case "lastName":
+            currentList.sort((a, b) => {
+                if(a.Last_Name > b.Last_Name){
+                    return -1;
+                }else if(a.Last_Name < b.Last_Name){
+                    return 1;
+                }
+                return 0;
+            });
+            break;
+
+        case "number":
+            num = [];
+            str = [];
+            currentList.map(player => isNaN(player.Number) ? str.push(player) : num.push(player));
+            num.sort((a, b) => {
+                return b.Number - a.Number;
+            });
+            str.sort((a, b) => {
+                if(a.First_Name > b.First_Name){
+                    return -1;
+                }else if(a.First_Name < b.First_Name){
+                    return 1;
+                }
+                return 0;
+            });
+            currentList = num.concat(str);
+            break;
+        
+        case "yearsInLeague":
+            num = [];
+            str = [];
+            currentList.map(player => isNaN(player.Years_in_league) ? str.push(player) : num.push(player));
+            num.sort((a, b) => {
+                return b.Years_in_league - a.Years_in_league;
+            });
+            str.sort((a, b) => {
+                if(a.First_Name > b.First_Name){
+                    return -1;
+                }else if(a.First_Name < b.First_Name){
                     return 1;
                 }
                 return 0;
@@ -177,9 +266,9 @@ function sortPlayers(arr, sort) {
         
         default:
             currentList.sort((a, b) => {
-                if(a.First_Name < b.First_Name){
+                if(a.First_Name > b.First_Name){
                     return -1;
-                }else if(a.First_Name > b.First_Name){
+                }else if(a.First_Name < b.First_Name){
                     return 1;
                 }
                 return 0;

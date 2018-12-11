@@ -1,3 +1,26 @@
+body{
+    background-color: lightblue !important;
+}
+
 .container {
     margin-top: 100px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 63px 1px rgba(20,19,20,1);
+    padding:30px;
+    margin-bottom: 100px;
+    background-color: white;
+}
+
+h1 {
+    text-align: center;
+}
+
+.row {
+    margin-top: 30px;
+    margin-bottom: 20px;
+}
+
+label {
+    font-weight:bold;
+    font-size: 17px;
 }
