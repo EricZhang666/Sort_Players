@@ -18,9 +18,16 @@ h1 {
 .row {
     margin-top: 30px;
     margin-bottom: 20px;
+    padding:10px;
+    background-color: #e2e2e2;
 }
 
 label {
     font-weight:bold;
     font-size: 17px;
 }
+
+.playerTable{
+    overflow:auto;
+}
+
